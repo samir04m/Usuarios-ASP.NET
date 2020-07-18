@@ -10,20 +10,19 @@ namespace Usuarios.Controllers
     public class UsuariosController : Controller
     {
         //[HttpGet]
-        [Route("/users/home")]
-        [Route("/users/profile/{name}")]
-        public IActionResult Index(int id, String name, int age)
+        //[Route("/users/home")]
+        //[Route("/users/profile/{name}")]
+        public IActionResult Index(int data)
         {
-            // https://localhost:44371/Usuarios/Index?name=Samir&age=22
-
-            ViewData["id"] = id;
-            String datos = name + "  " + age;
-            return View("Index", datos);
+            var url = Url.RouteUrl("User", new {age=22, name="Samir" });
+            return Redirect(url);
         }
 
-        public IActionResult Index()
+        [HttpGet("[controller]/[action]", Name = "User")]
+        public IActionResult Metodo(int code)
         {
-            return View();
+            var data = $"Codigo de estado {code}";
+            return View("Index", data);
         }
     }
 }

@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Microsoft.AspNetCore.Http;
+
 namespace Usuarios
 {
     public class Startup
@@ -48,8 +50,23 @@ namespace Usuarios
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts(); 
             }
+
+            //app.UseStatusCodePages("text/plain", "Pagina de codigos de estados, codigo de estado {0}");
+
+            //app.UseStatusCodePages(async context =>
+            //{
+            //    await context.HttpContext.Response.WriteAsync(
+            //        "Pagina de codigos de estado, codigo de estado:" +
+            //        context.HttpContext.Response.StatusCode
+            //        );
+            //});
+
+            //app.UseStatusCodePagesWithRedirects("/Usuarios/Metodo?code={0}");
+
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}"); 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
