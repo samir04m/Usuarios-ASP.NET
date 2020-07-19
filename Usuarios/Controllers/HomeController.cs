@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Usuarios.Models;
 
+using Microsoft.AspNetCore.Diagnostics;
+
 namespace Usuarios.Controllers
 {
     public class HomeController : Controller
@@ -20,6 +22,7 @@ namespace Usuarios.Controllers
 
         public IActionResult Index()
         {
+            //throw new Exception("Esta es una excepcion");
             return View();
         }
 
@@ -36,9 +39,22 @@ namespace Usuarios.Controllers
             {
                 error = new ErrorViewModel
                 {
-                    RequestId = Convert.ToString(statusCode)
+                    RequestId = Convert.ToString(statusCode),
+                    ErrorMessage = "Se produjo un error al procesar su solicitud",
 
                 };
+            }
+            else
+            {
+                var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+                if (exceptionFeature != null)
+                {
+                    error = new ErrorViewModel
+                    {
+                        RequestId = "500",
+                        ErrorMessage = exceptionFeature.Error.Message,
+                    };
+                }
             }
             return View(error);
             //return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

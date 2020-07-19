@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Microsoft.AspNetCore.Http;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace Usuarios
 {
@@ -45,6 +47,23 @@ namespace Usuarios
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                //app.UseExceptionHandler(options =>
+                //{
+                //    options.Run(async context =>
+                //    {
+                //        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                //        context.Response.ContentType = "text/html";
+                //        var ex = context.Features.Get<IExceptionHandlerFeature>();
+                //        if (ex != null)
+                //        {
+                //            var error = $"<h1>Error: {ex.Error.Message}</h1>{ex.Error.StackTrace }";
+                //            await context.Response.WriteAsync(error).ConfigureAwait(false);
+                //        }
+                //    });
+                //});
+
+                //app.UseExceptionHandler("/Home/Error");
             }
             else
             {
