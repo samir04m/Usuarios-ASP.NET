@@ -9,8 +9,11 @@ namespace Usuarios.Areas.Usuario.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        public void OnGet()
+        public string Message { get; set; }
+
+        public void OnGet(string data)
         {
+            Message = data;
         }
     }
 }
