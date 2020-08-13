@@ -12,10 +12,15 @@ namespace Usuarios.Areas.Usuario.Pages.Account
     public class RegisterModel : PageModel
     {
         private UserManager<IdentityUser> _userManager;
+        private SignInManager<IdentityUser> _signInManager;
         private static InputModel _input = null;
-        public RegisterModel(UserManager<IdentityUser> userManager)
+
+        public RegisterModel(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public void OnGet(string data)
@@ -78,6 +83,7 @@ namespace Usuarios.Areas.Usuario.Pages.Account
                     var result = await _userManager.CreateAsync(user, Input.Password);
                     if (result.Succeeded)
                     {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
                         run = true;
                     }
                     else

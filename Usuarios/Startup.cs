@@ -101,6 +101,7 @@ namespace Usuarios
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapAreaControllerRoute("Usuario", "Usuario", "{controller=Usuario}/{action=Usuario}/{id?}");
+                endpoints.MapAreaControllerRoute("Principal", "Principal", "{controller=Principal}/{action=Principal}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
