@@ -83,6 +83,7 @@ namespace Usuarios.Areas.Usuario.Pages.Account
                     var result = await _userManager.CreateAsync(user, Input.Password);
                     if (result.Succeeded)
                     {
+                        await _userManager.AddToRoleAsync(user, "User");
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         run = true;
                     }
