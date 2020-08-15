@@ -21,7 +21,7 @@ namespace Usuarios.Library
         internal async Task<SignInResult> UserLoginAsync(LoginModel model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Input.Email,
-                model.Input.Password, false, lockoutOnFailure: false);
+                model.Input.Password, false, lockoutOnFailure: true);
             if (result.Succeeded)
             {
 

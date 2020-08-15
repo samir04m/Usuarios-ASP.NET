@@ -52,6 +52,12 @@ namespace Usuarios
                 options.AddPolicy("Authorization", policy => policy.RequireRole("Admin", "User"));
             });
 
+            services.Configure<IdentityOptions>(options => {
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                options.Lockout.MaxFailedAccessAttempts = 2;
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

@@ -68,6 +68,12 @@ namespace Usuarios.Controllers
                     _model = model;
                     return Redirect("/Principal/Principal");
                 }
+                else if (result.IsLockedOut)
+                {
+                    model.ErrorMessage = "Cuenta de usuario bloqueada.";
+                    _model = model;
+                    return Redirect("/");
+                }
                 else
                 {
                     model.ErrorMessage = "Correo o contraseña inválidos.";
