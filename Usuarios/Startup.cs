@@ -48,6 +48,10 @@ namespace Usuarios
                 options.AccessDeniedPath = "/Usuario/Account/AccessDenied";
             });
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("Authorization", policy => policy.RequireRole("Admin", "User"));
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

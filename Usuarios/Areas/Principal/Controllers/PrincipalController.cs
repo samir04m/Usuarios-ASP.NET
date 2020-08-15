@@ -21,7 +21,8 @@ namespace Usuarios.Areas.Principal.Controllers
             _signInManager = signInManager;
         }
 
-        [Authorize(Roles = "Admin, User")]
+        //[Authorize(Roles = "Admin, User")]
+        [Authorize(Policy = "Authorization")]
         public IActionResult Principal()
         {
             //if (_signInManager.IsSignedIn(User))
