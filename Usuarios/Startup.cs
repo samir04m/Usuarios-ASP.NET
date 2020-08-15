@@ -40,6 +40,14 @@ namespace Usuarios
 
             //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.ConfigureApplicationCookie(options => {
+                //Obtiene o establece un valor que especifica si un script del lado del cliente puede acceder a una cookie.
+                options.Cookie.HttpOnly = true;
+                options.LoginPath = "/Home/Index";
+                options.AccessDeniedPath = "/Usuario/Account/AccessDenied";
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
