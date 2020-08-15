@@ -10,25 +10,72 @@ using Usuarios.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Usuarios.Areas.Usuario.Models;
+using Usuarios.Library;
+using Usuarios.Areas.Principal.Controllers;
 
 namespace Usuarios.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         //IServiceProvider _serviceProvider;
+        private SignInManager<IdentityUser> _signInManager;
+        private static LoginModel _model = null;
+        private LUsuario _usuario;
 
-        public HomeController(ILogger<HomeController> logger, IServiceProvider serviceProvider)
+        public HomeController(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            IServiceProvider serviceProvider)
         {
-            _logger = logger;
             //_serviceProvider = serviceProvider;
+            _signInManager = signInManager;
+            _usuario = new LUsuario(userManager, signInManager, roleManager);
         }
 
         public async Task<IActionResult> Index()
         {
             //throw new Exception("This is some exception!!!");
             //await CreateRolesAsync(_serviceProvider);
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction(nameof(PrincipalController.Principal), "Principal");
+            }
+            else
+            {
+                if (_model == null)
+                {
+                    return View();
+                }
+                else
+                {
+                    return View(_model);
+                }
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(LoginModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _usuario.UserLoginAsync(model);
+                if (result.Succeeded)
+                {
+                    model.ErrorMessage = null;
+                    model.Input.Email = null;
+                    _model = model;
+                    return Redirect("/Principal/Principal");
+                }
+                else
+                {
+                    model.ErrorMessage = "Correo o contraseña inválidos.";
+                    _model = model;
+                    return Redirect("/");
+                }
+            }
+            return View(model);
         }
 
         public IActionResult Privacy()
