@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Usuarios.Areas.Usuario.Models;
 using Usuarios.Library;
 using Usuarios.Areas.Principal.Controllers;
+using Microsoft.AspNetCore.Http;
 
 namespace Usuarios.Controllers
 {
@@ -63,6 +64,8 @@ namespace Usuarios.Controllers
                 var result = await _usuario.UserLoginAsync(model);
                 if (result.Succeeded)
                 {
+                    HttpContext.Session.SetString("User", "Samir");
+                    HttpContext.Session.SetInt32("Age", 22);
                     model.ErrorMessage = null;
                     model.Input.Email = null;
                     _model = model;

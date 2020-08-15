@@ -44,8 +44,14 @@ namespace Usuarios
             services.ConfigureApplicationCookie(options => {
                 //Obtiene o establece un valor que especifica si un script del lado del cliente puede acceder a una cookie.
                 options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.LoginPath = "/Home/Index";
                 options.AccessDeniedPath = "/Usuario/Account/AccessDenied";
+            });
+
+            services.AddSession(options => {
+                options.Cookie.Name = ".SAMT.Session";
+                options.IdleTimeout = TimeSpan.FromHours(12);
             });
 
             services.AddAuthorization(options => {
@@ -65,6 +71,8 @@ namespace Usuarios
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSession();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

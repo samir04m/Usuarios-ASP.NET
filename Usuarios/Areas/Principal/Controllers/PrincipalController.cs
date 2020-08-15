@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Usuarios.Controllers;
 
 namespace Usuarios.Areas.Principal.Controllers
 {
     [Area("Principal")]
+    [Authorize]
     public class PrincipalController : Controller
     {
         private SignInManager<IdentityUser> _signInManager;
@@ -22,18 +25,20 @@ namespace Usuarios.Areas.Principal.Controllers
         }
 
         //[Authorize(Roles = "Admin, User")]
-        [Authorize(Policy = "Authorization")]
+        //[Authorize(Policy = "Authorization")]
         public IActionResult Principal()
         {
-            //if (_signInManager.IsSignedIn(User))
-            //{
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
+            if (_signInManager.IsSignedIn(User))
+            {
+                var user = HttpContext.Session.GetString("User");
+                var age = HttpContext.Session.GetInt32("Age");
+                return View();
+            }
+            else
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
 
-            //}
+            }
         }
     }
 }
