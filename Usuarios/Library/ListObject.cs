@@ -10,7 +10,7 @@ namespace Usuarios.Library
 {
     public class ListObject
     {
-        //public LUsersRoles _usersRole;
+        public LUsuariosRoles _usersRole;
 
         public IdentityError _identityError;
         public ApplicationDbContext _context;

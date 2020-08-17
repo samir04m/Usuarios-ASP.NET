@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,6 +36,14 @@ namespace Usuarios.Areas.Usuario.Models
 
         [Required(ErrorMessage = "Seleccione un role.")]
         public string Role { get; set; }
+
+        public string ID { get; set; }
+
+        public int Id { get; set; }
+
+        public byte[] Image { get; set; }
+
+        public IdentityUser IdentityUser { get; set; }
 
     }
 }

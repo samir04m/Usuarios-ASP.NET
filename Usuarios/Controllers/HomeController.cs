@@ -15,6 +15,7 @@ using Usuarios.Library;
 using Usuarios.Areas.Principal.Controllers;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Usuarios.Data;
 
 namespace Usuarios.Controllers
 {
@@ -29,11 +30,12 @@ namespace Usuarios.Controllers
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context,
             IServiceProvider serviceProvider)
         {
             //_serviceProvider = serviceProvider;
             _signInManager = signInManager;
-            _usuario = new LUsuario(userManager, signInManager, roleManager);
+            _usuario = new LUsuario(userManager, signInManager, roleManager, context);
         }
 
         public async Task<IActionResult> Index()

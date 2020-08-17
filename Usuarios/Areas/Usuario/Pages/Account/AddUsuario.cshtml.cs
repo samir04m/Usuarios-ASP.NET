@@ -47,6 +47,7 @@ namespace Usuarios.Areas.Usuario.Pages.Account
             if (_dataInput != null)
             {
                 Input = _dataInput;
+                Input.rolesLista = _userRoles.getRoles(_roleManager);
             }
             else
             {
