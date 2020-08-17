@@ -23,6 +23,7 @@ namespace Usuarios.Areas.Usuario.Pages.Account
         private ApplicationDbContext _context;
         private LUsuariosRoles _userRoles;
         private static InputModel _dataInput;
+        private LUploadimage _uploadimage;
         private IWebHostEnvironment _environment;
 
         public AddUsuarioModel(
@@ -38,6 +39,7 @@ namespace Usuarios.Areas.Usuario.Pages.Account
             _roleManager = roleManager;
             _environment = environment;
             _userRoles = new LUsuariosRoles();
+            _uploadimage = new LUploadimage();
         }
 
         public void OnGet()
@@ -104,6 +106,21 @@ namespace Usuarios.Areas.Usuario.Pages.Account
                                 {
                                     await _userManager.AddToRoleAsync(user, Input.Role);
                                     var dataUser = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList().Last();
+                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "images/default.png");
+                                    var t_user = new TUsers
+                                    {
+                                        Name = Input.Name,
+                                        LastName = Input.LastName,
+                                        NID = Input.NID,
+                                        Email = Input.Email,
+                                        IdUser = dataUser.Id,
+                                        Image = imageByte,
+                                    };
+                                    await _context.AddAsync(t_user);
+                                    _context.SaveChanges();
+                                    transaction.Commit();
+                                    _dataInput = null;
+                                    valor = true;
                                 }
                                 else
                                 {
