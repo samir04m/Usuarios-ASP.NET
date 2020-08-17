@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Usuarios.Areas.Usuario.Models;
 
 namespace Usuarios.Data
 {
@@ -12,5 +13,6 @@ namespace Usuarios.Data
             : base(options)
         {
         }
+        public DbSet<TUsers> TUsers { get; set; }
     }
 }
