@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Usuarios.Areas.Usuario.Models;
 using Usuarios.Controllers;
 
 namespace Usuarios.Areas.Principal.Controllers
@@ -31,7 +33,9 @@ namespace Usuarios.Areas.Principal.Controllers
             if (_signInManager.IsSignedIn(User))
             {
                 var user = HttpContext.Session.GetString("User");
-                var age = HttpContext.Session.GetInt32("Age");
+                //var age = HttpContext.Session.GetInt32("Age");
+                var dataUser = JsonConvert.DeserializeObject<TUsers>(user);
+
                 return View();
             }
             else
