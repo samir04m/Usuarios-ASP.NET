@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,10 +33,10 @@ namespace Usuarios.Areas.Principal.Controllers
         {
             if (_signInManager.IsSignedIn(User))
             {
-                var user = HttpContext.Session.GetString("User");
+                //var user = HttpContext.Session.GetString("User");
                 //var age = HttpContext.Session.GetInt32("Age");
-                var dataUser = JsonConvert.DeserializeObject<TUsers>(user);
-
+                //var dataUser = JsonConvert.DeserializeObject<TUsers>(user);
+                var user = User.Claims.FirstOrDefault(u => u.Type.Equals(ClaimTypes.Name)).Value;
                 return View();
             }
             else

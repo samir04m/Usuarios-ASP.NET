@@ -67,13 +67,13 @@ namespace Usuarios.Controllers
                 {
                     //HttpContext.Session.SetString("User", "Samir");
                     //HttpContext.Session.SetInt32("Age", 22);
-                    var user = new TUsers
-                    {
-                        Name = "Samir",
-                        LastName = "Mejia",
-                    };
-                    var data = JsonConvert.SerializeObject(user);
-                    HttpContext.Session.SetString("User", data);
+                    //var user = new TUsers
+                    //{
+                    //    Name = "Samir",
+                    //    LastName = "Mejia",
+                    //};
+                    //var data = JsonConvert.SerializeObject(user);
+                    //HttpContext.Session.SetString("User", data);
 
                     model.ErrorMessage = null;
                     model.Input.Email = null;
