@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Usuarios.Areas.Usuario.Models;
 using Usuarios.Data;
 using Usuarios.Library;
@@ -25,6 +26,7 @@ namespace Usuarios.Areas.Usuario.Pages.Account
         private static InputModel _dataInput;
         private LUploadimage _uploadimage;
         private IWebHostEnvironment _environment;
+        private static InputModelRegister _dataUser1, _dataUser2;
 
         public AddUsuarioModel(
             UserManager<IdentityUser> userManager,
@@ -69,15 +71,23 @@ namespace Usuarios.Areas.Usuario.Pages.Account
             public List<SelectListItem> rolesLista { get; set; }
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(String dataUser)
         {
-            if (await SaveAsync())
+            if (dataUser == null)
             {
-                return Redirect("/Usuario/Usuario?area=Usuario");
+                if (await SaveAsync())
+                {
+                    return Redirect("/Usuario/Usuario?area=Usuario");
+                }
+                else
+                {
+                    return Redirect("/Usuario/AddUsuario");
+                }
             }
             else
             {
-                return Redirect("/Usuario/AddUsuario");
+                _dataUser1 = JsonConvert.DeserializeObject<InputModelRegister>(dataUser);
+                return Redirect("/Usuario/AddUsuario?id=1");
             }
         }
 
