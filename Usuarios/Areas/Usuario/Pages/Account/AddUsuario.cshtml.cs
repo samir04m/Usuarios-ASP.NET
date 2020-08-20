@@ -44,12 +44,43 @@ namespace Usuarios.Areas.Usuario.Pages.Account
             _uploadimage = new LUploadimage();
         }
 
-        public void OnGet()
+        public void OnGet(int id)
         {
-            if (_dataInput != null)
+            _dataUser2 = null;
+            if (id.Equals(0))
             {
-                Input = _dataInput;
-                Input.rolesLista = _userRoles.getRoles(_roleManager);
+                _dataUser2 = null;
+            }
+            if (_dataInput != null || _dataUser1 != null || _dataUser2 != null)
+            {
+                if (_dataInput != null)
+                {
+                    Input = _dataInput;
+                    Input.rolesLista = _userRoles.getRoles(_roleManager);
+                    Input.AvatarImage = null;
+                }
+                else
+                {
+                    if (_dataUser1 != null || _dataUser2 != null)
+                    {
+                        if (_dataUser2 != null) _dataUser1 = _dataUser2;
+                        Input = new InputModel
+                        {
+                            Id = _dataUser1.Id,
+                            Name = _dataUser1.Name,
+                            LastName = _dataUser1.LastName,
+                            NID = _dataUser1.NID,
+                            Email = _dataUser1.Email,
+                            Image = _dataUser1.Image,
+                            PhoneNumber = _dataUser1.IdentityUser.PhoneNumber,
+                            rolesLista = getRoles(_dataUser1.Role),
+                        };
+                        if (_dataInput != null)
+                        {
+                            Input.ErrorMessage = _dataInput.ErrorMessage;
+                        }
+                    }
+                }
             }
             else
             {
@@ -58,7 +89,8 @@ namespace Usuarios.Areas.Usuario.Pages.Account
                     rolesLista = _userRoles.getRoles(_roleManager)
                 };
             }
-            
+            _dataUser2 = _dataUser1;
+            _dataUser1 = null;
         }
 
         [BindProperty]
@@ -75,13 +107,29 @@ namespace Usuarios.Areas.Usuario.Pages.Account
         {
             if (dataUser == null)
             {
-                if (await SaveAsync())
-                {
-                    return Redirect("/Usuario/Usuario?area=Usuario");
+                if (_dataUser2 == null)
+                { 
+                    if (await SaveAsync())
+                    {
+                        return Redirect("/Usuario/Usuario?area=Usuario");
+                    }
+                    else
+                    {
+                        return Redirect("/Usuario/AddUsuario");
+                    }
                 }
                 else
                 {
-                    return Redirect("/Usuario/AddUsuario");
+                    if (await UpdateAsync())
+                    {
+                        var url = $"/Usuario/Details?id={_dataUser2.Id}";
+                        _dataUser2 = null;
+                        return Redirect(url);
+                    }
+                    else
+                    {
+                        return Redirect("/Users/Register");
+                    }
                 }
             }
             else
@@ -168,6 +216,82 @@ namespace Usuarios.Areas.Usuario.Pages.Account
                 valor = false;
             }
 
+            return valor;
+        }
+
+        private List<SelectListItem> getRoles(String role)
+        {
+            List<SelectListItem> rolesLista = new List<SelectListItem>();
+            rolesLista.Add(new SelectListItem
+            {
+                Text = role
+            });
+            var roles = _userRoles.getRoles(_roleManager);
+            roles.ForEach(item =>{
+                if (item.Text != role)
+                {
+                    rolesLista.Add(new SelectListItem
+                    {
+                        Text = item.Text
+                    });
+                }
+            });
+            return rolesLista;
+        }
+
+        private async Task<bool> UpdateAsync()
+        {
+            var valor = false;
+            byte[] imageByte = null;
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () => {
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var identityUser = _userManager.Users.Where(u => u.Id.Equals(_dataUser2.ID)).ToList().Last();
+                        identityUser.UserName = Input.Email;
+                        identityUser.Email = Input.Email;
+                        identityUser.PhoneNumber = Input.PhoneNumber;
+                        _context.Update(identityUser);
+                        await _context.SaveChangesAsync();
+                        if (Input.AvatarImage == null)
+                        {
+                            imageByte = _dataUser2.Image;
+                        }
+                        else
+                        {
+                            imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "");
+                        }
+                        var t_user = new TUsers
+                        {
+                            ID = _dataUser2.Id,
+                            Name = Input.Name,
+                            LastName = Input.LastName,
+                            NID = Input.NID,
+                            Email = Input.Email,
+                            IdUser = _dataUser2.ID,
+                            Image = imageByte,
+                        };
+                        _context.Update(t_user);
+                        _context.SaveChanges();
+                        if (_dataUser2.Role != Input.Role)
+                        {
+                            await _userManager.RemoveFromRoleAsync(identityUser, _dataUser2.Role);
+                            await _userManager.AddToRoleAsync(identityUser, Input.Role);
+                        }
+                        transaction.Commit();
+                        valor = true;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        _dataInput.ErrorMessage = ex.Message;
+                        transaction.Rollback();
+                        valor = false;
+                    }
+                }
+            });
             return valor;
         }
 
